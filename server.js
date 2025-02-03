@@ -1,11 +1,25 @@
 const express = require('express');
+const cors = require('cors');
 const connectDB = require('./utils/connectDB');
 const app = express();
 const PORT = '5100'
 // Middleware to parse JSON
 app.use(express.json());
 
-const User = require('./controller/user.controller')
+const corsOptions = {
+    origin: '*',    //Allow from the the routes , Or we can mention the url here for specific routes or [] array of multiple origins
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+    optionsSuccessStatus: 204,
+};
+
+app.use(cors(corsOptions));
+
+const User = require('./routes/user.routes')
+const Reciept = require('./routes/reciept.routes')
+
+app.use('/api/user', User)
+app.use('/api/reciept', Reciept)
 
 // Sample route
 app.get('/', (req, res) => {

@@ -16,6 +16,10 @@ const userSchema = new mongoose.Schema({
         required: true,
         minlength: 8
     },
+    company: {
+        type: String,
+        default: null
+    },
     createdAt: {
         type: Date,
         default: Date.now
@@ -26,11 +30,5 @@ const userSchema = new mongoose.Schema({
     }
 }, { timestamps: true });
 
-// Method to compare password
-// userSchema.methods.matchPassword = async function (enteredPassword) {
-//     // return await bcrypt.compare(enteredPassword, this.password);
-//     return this.password === enteredPassword;
-// };
 const User = mongoose.model('User', userSchema);
 module.exports = User;
-// export default User;
