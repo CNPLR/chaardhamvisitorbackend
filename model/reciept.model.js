@@ -15,7 +15,7 @@ const recieptSchema = new mongoose.Schema({
         type: String,
     },
     locker: {
-        type: String,
+        type: Boolean,
         default: false
     },
     items: {
@@ -41,8 +41,9 @@ const recieptSchema = new mongoose.Schema({
     company: {
         type: String,
     },
-    reciept: {
+    receiptNo: {
         type: String,
+        unique: true
     },
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
