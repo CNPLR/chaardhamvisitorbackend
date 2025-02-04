@@ -31,8 +31,16 @@ const recieptSchema = new mongoose.Schema({
         default: "0"
     },
     ammount: {
-        type: String,
-        default: "0"
+        type: Number,
+        default: 0
+    },
+    extraAmount: {
+        type: Number,
+        default: 0
+    },
+    totalAmount: {
+        type: Number,
+        default: 0
     },
     description: {
         type: String,
