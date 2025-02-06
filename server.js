@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const connectDB = require('./utils/connectDB');
 const app = express();
-const PORT = '5100'
+const PORT = '9001'
 // Middleware to parse JSON
 app.use(express.json());
 
