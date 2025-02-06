@@ -1,5 +1,6 @@
 const Reciept = require('../model/reciept.model');
 const Counter = require('../model/counter');
+const User = require('./user.controller');
 
 async function createReciept(req, res) {
     const { name, mobileNumber, place, persons, items, key, ammount, description, locker, userId, numberOfLocker, company } = req.body;
@@ -96,23 +97,16 @@ async function getBlogbyQuery(req, res) {
                 }
             ];
         }
-        const receipt = await Reciept.find(queryObject);
+        const receipt = await Reciept.find(queryObject).populate("createdBy", "-password");
+
         res.status(200).json(receipt); // Ensure you send a response to the client
     } catch (error) {
-        console.error(error);
         res.status(500).json({ error: 'Server error' }); // Handle errors gracefully
     }
 }
 
 async function getfilteredData(req, res) {
-    const { search } = req.body;
-
-    // Validate input
-    if (!Array.isArray(search) || search.length < 2) {
-        return res.status(400).json({ message: 'search must include both startDate and endDate' });
-    }
-
-    const [startDate, endDate] = search;
+    const { startDate, endDate } = req.body;
 
     if (!startDate || !endDate) {
         return res.status(400).json({ message: 'startDate and endDate are required' });
@@ -127,30 +121,11 @@ async function getfilteredData(req, res) {
         }
 
         // Fetch filtered data from User_account
-        const filteredData = await User_account.find({
-            createdAt: {
-                $gte: start.toISOString(),
-                $lte: end.toISOString(),
-            },
-        }).select("-password");
+        const filteredData = await Reciept.find({ createdAt: { $gte: start.toISOString(), $lte: end.toISOString(), }, }).populate("createdBy", "-password");
 
-        // Populate the associated user for each User_account
-        const populatedData = await Promise.all(
-            filteredData.map(async (ele) => {
-                const user = ele.id
-                    ? await SiteUser.findOne({ user_account_id: ele.id })
-                    : await SiteUser.findOne({ _id: ele.user });
+        return res.status(200).json({ success: true, data: filteredData });
 
-                return {
-                    ...ele.toObject(), // Convert Mongoose document to plain JavaScript object
-                    user,
-                };
-            })
-        );
-
-        return res.status(200).json({ success: true, data: populatedData });
     } catch (error) {
-        console.error("Error fetching data:", error);
         res.status(500).json({ message: "Internal server error" });
     }
 }
