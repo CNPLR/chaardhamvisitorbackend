@@ -3,9 +3,10 @@ const router = express.Router();
 
 const userReciept = require('../controller/Reciept.controller.js');
 
-const { createReciept, readReciept, readRecieptById, updateReciept, deleteReciept, getBlogbyQuery, getfilteredData } = userReciept;
+const { createReciept, readReciept, readRecieptById, updateReciept, deleteReciept, getBlogbyQuery, getfilteredData, dataByUser } = userReciept;
 
 // User Routes
+router.post('/databyuser', dataByUser);
 router.post('/', createReciept);
 router.post('/filtereduserdata', getBlogbyQuery);
 router.post('/data', getfilteredData);

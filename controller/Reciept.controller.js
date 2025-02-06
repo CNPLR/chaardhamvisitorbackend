@@ -1,11 +1,9 @@
 const Reciept = require('../model/reciept.model');
 const Counter = require('../model/counter');
-const User = require('./user.controller');
 
 async function createReciept(req, res) {
     const { name, mobileNumber, place, persons, items, key, ammount, description, locker, userId, numberOfLocker, company } = req.body;
     try {
-
         const now = new Date();
         const year = now.getFullYear();
         const month = String(now.getMonth() + 1).padStart(2, "0"); // Ensure 2-digit month
@@ -57,9 +55,7 @@ async function updateReciept(req, res) {
     const reciept = await Reciept.findByIdAndUpdate(req.params.id, req.body,)
 
     try {
-        if (!reciept) {
-            return res.status(404).json({ success: false, message: 'Not found' });
-        }
+        if (!reciept) { return res.status(404).json({ success: false, message: 'Not found' }); }
 
         let updatedAt = new Date()
 
@@ -80,7 +76,6 @@ async function updateReciept(req, res) {
         await reciept.save();
 
         return res.json({ success: true, message: 'updated successfully' });
-
     } catch (error) {
         return res.status(500).json({ success: false, message: 'Failed to update', error: error.message });
     }
@@ -102,6 +97,17 @@ async function getBlogbyQuery(req, res) {
         res.status(200).json(receipt); // Ensure you send a response to the client
     } catch (error) {
         res.status(500).json({ error: 'Server error' }); // Handle errors gracefully
+    }
+}
+
+async function dataByUser(req, res) {
+    try {
+        const { user } = req.body
+        const find = await Reciept.find().populate("createdBy", "-password");
+        const filter = find.filter((ele) => ele.createdBy.name == user)
+        return res.status(200).json(filter);
+    } catch (error) {
+        res.status(500).json({ error: 'Server error' });
     }
 }
 
@@ -138,4 +144,4 @@ async function deleteReciept(req, res) {
     }
 }
 
-module.exports = { createReciept, readReciept, readRecieptById, updateReciept, deleteReciept, getBlogbyQuery, getfilteredData };
+module.exports = { createReciept, readReciept, readRecieptById, updateReciept, deleteReciept, getBlogbyQuery, getfilteredData, dataByUser };

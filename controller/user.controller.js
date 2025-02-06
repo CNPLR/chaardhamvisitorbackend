@@ -91,5 +91,5 @@ module.exports = {
     readUserById,
     updateUser,
     deleteUser,
-    login
+    login,
 };
