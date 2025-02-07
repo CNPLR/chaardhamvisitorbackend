@@ -91,31 +91,34 @@ async function readRecieptById(req, res) {
 
 async function updateReciept(req, res) {
     try {
-
         const receiptId = req.params.id;
-        const reciept = await Reciept.findById(receiptId)
+
+        // Find the receipt by ID
+        const reciept = await Reciept.findOne({_id:receiptId,status:"active"});
         if (!reciept) {
-            return res.status(404).json({ success: false, message: 'Not found' });
+            return res.status(404).json({ success: false, message: "Receipt not found" });
         }
 
-        const { name, mobileNumber, place, persons, items, ammount, description, extraAmount, totalAmount } = req.body;
+        // Destructure the request body
+        const { name, mobileNumber, place, persons, items, description, extraAmount, totalAmount, status } = req.body;
 
-        reciept.name || name;
-        reciept.mobileNumber || mobileNumber;
-        reciept.place || place;
-        reciept.persons || persons;
-        reciept.items || items;
-        reciept.ammount || ammount;
-        reciept.description || description;
-        reciept.extraAmount || extraAmount;
-        reciept.totalAmount || totalAmount;
+        // Update the receipt fields if provided
+        if (name !== undefined) reciept.name = name;
+        if (mobileNumber !== undefined) reciept.mobileNumber = mobileNumber;
+        if (place !== undefined) reciept.place = place;
+        if (persons !== undefined) reciept.persons = persons;
+        if (items !== undefined) reciept.items = items;
+        if (description !== undefined) reciept.description = description;
+        if (extraAmount !== undefined) reciept.extraAmount = extraAmount;
+        if (totalAmount !== undefined) reciept.totalAmount = totalAmount;
+        if (status !== undefined) reciept.status = status;
 
+        // Save the updated receipt
         await reciept.save();
 
-        return res.json({ success: true, message: 'updated successfully' });
-
+        return res.json({ success: true, message: "Receipt updated successfully", data: reciept });
     } catch (error) {
-        return res.status(500).json({ success: false, message: 'Failed to update', error: error.message });
+        return res.status(500).json({ success: false, message: "Failed to update receipt", error: error.message });
     }
 }
 
