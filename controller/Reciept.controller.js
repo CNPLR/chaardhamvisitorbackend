@@ -3,6 +3,7 @@ const Counter = require('../model/counter');
 const express = require("express");
 const areKeysAvailable = require('../utils/areKeysAvailable');
 const addBookedKeys = require('../utils/addBookedKeys');
+const removeBookedKeys = require('../utils/removeBookedKeys');
 const app = express();
 app.use(express.json());
 
@@ -115,6 +116,12 @@ async function updateReciept(req, res) {
 
         // Save the updated receipt
         await reciept.save();
+
+        //Free the booked locker
+        if(status === "inactive"){
+            await removeBookedKeys(reciept?.key || []);
+            console.log("Locker key free")
+        }
 
         return res.json({ success: true, message: "Receipt updated successfully", data: reciept });
     } catch (error) {
