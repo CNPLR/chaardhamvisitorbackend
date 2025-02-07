@@ -17,7 +17,8 @@ async function createReciept(req, res) {
 
         //Booked locker only if the locker is true.
         if (locker && key) {
-            const keysToBook = key?.split(',').map(n => Number(n));  //Chnage it array and convert in number.
+            // const keysToBook = key?.split(',').map(n => Number(n));  //Chnage it array and convert in number.
+            const keysToBook = key //Chnage it array and convert in number.
 
             const isLockerAvailable = await areKeysAvailable(keysToBook);
 
@@ -57,7 +58,6 @@ async function createReciept(req, res) {
             success: true,
             message: 'Receipt details saved successfully',
             data: reciept,
-            lockerCount
         });
 
     } catch (error) {
@@ -71,7 +71,7 @@ async function createReciept(req, res) {
 
 async function readReciept(req, res) {
     try {
-        const reciept = await Reciept.find().populate("createdBy", "-password");
+        const reciept = await Reciept.find().populate("createdBy", "-password").sort({ _id: -1 })
         return res.status(201).json({ success: true, data: reciept });
     } catch (error) {
         return res.status(500).json({ success: false, error: error.message });
@@ -112,7 +112,7 @@ async function updateReciept(req, res) {
 
         await reciept.save();
 
-       return res.json({ success: true, message: 'updated successfully' });
+        return res.json({ success: true, message: 'updated successfully' });
 
     } catch (error) {
         return res.status(500).json({ success: false, message: 'Failed to update', error: error.message });
