@@ -17,9 +17,11 @@ app.use(cors(corsOptions));
 
 const User = require('./routes/user.routes')
 const Reciept = require('./routes/reciept.routes')
+const bookedKeysRoutes = require("./routes/bookedKeysRoutes.js");
 
 app.use('/api/user', User)
 app.use('/api/reciept', Reciept)
+app.use('/api/booked-keys', bookedKeysRoutes)
 
 // Sample route
 app.get('/', (req, res) => {

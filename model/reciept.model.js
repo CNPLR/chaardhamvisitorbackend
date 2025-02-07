@@ -2,6 +2,10 @@
 const mongoose = require('mongoose');
 
 const recieptSchema = new mongoose.Schema({
+    receiptNo: {
+        type: String,
+        unique: true
+    },
     name: {
         type: String,
     },
@@ -23,12 +27,8 @@ const recieptSchema = new mongoose.Schema({
         default: "0"
     },
     key: {
-        type: String,
-        default: "0"
-    },
-    numberOfLocker: {
-        type: String,
-        default: "0"
+        type: Array,
+        default: []
     },
     ammount: {
         type: Number,
@@ -49,13 +49,14 @@ const recieptSchema = new mongoose.Schema({
     company: {
         type: String,
     },
-    receiptNo: {
-        type: String,
-        unique: true
-    },
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
+    },
+    status:{
+        type:String,
+        enum:["active",'inactive'],
+        default:"active"
     }
 
 }, { timestamps: true });
