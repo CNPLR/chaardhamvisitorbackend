@@ -14,7 +14,6 @@ async function createReciept(req, res) {
             locker, userId, company, gate
         } = req.body;
 
-
         //Booked locker only if the locker is true.
         if (locker && key) {
             // const keysToBook = key?.split(',').map(n => Number(n));  //Chnage it array and convert in number.
@@ -71,7 +70,7 @@ async function createReciept(req, res) {
 
 async function readReciept(req, res) {
     try {
-        const reciept = await Reciept.find().populate("createdBy", "-password").sort({ _id: -1 })
+        const reciept = await Reciept.find().populate("createdBy", "-password").sort({ _id: -1 }).limit(100);
         return res.status(201).json({ success: true, data: reciept });
     } catch (error) {
         return res.status(500).json({ success: false, error: error.message });
@@ -149,7 +148,6 @@ async function getReceiptByQuery(req, res) {
 
 async function getReceiptByGate(req, res) {
     try {
-        console.log(req.body)
         const { gateNo } = req.body;
         const queryObject = {};
         if (gateNo) {
@@ -159,7 +157,7 @@ async function getReceiptByGate(req, res) {
                 }
             ];
         }
-        const receipt = await Reciept.find(queryObject).populate("createdBy", "-password");
+        const receipt = await Reciept.find(queryObject).populate("createdBy", "-password").limit(100);
 
         res.status(200).json(receipt); // Ensure you send a response to the client
     } catch (error) {
@@ -170,7 +168,7 @@ async function getReceiptByGate(req, res) {
 async function dataByUser(req, res) {
     try {
         const { user } = req.body
-        const find = await Reciept.find().populate("createdBy", "-password");
+        const find = await Reciept.find().populate("createdBy", "-password").limit(100);
         const filter = find.filter((ele) => ele.createdBy.name == user)
         return res.status(200).json(filter);
     } catch (error) {
@@ -194,7 +192,7 @@ async function getfilteredData(req, res) {
         }
 
         // Fetch filtered data from User_account
-        const filteredData = await Reciept.find({ createdAt: { $gte: start.toISOString(), $lte: end.toISOString(), }, }).populate("createdBy", "-password");
+        const filteredData = await Reciept.find({ createdAt: { $gte: start.toISOString(), $lte: end.toISOString(), }, }).populate("createdBy", "-password").limit(100);
 
         return res.status(200).json({ success: true, data: filteredData });
 
@@ -219,4 +217,17 @@ async function deleteReciept(req, res) {
     }
 }
 
-module.exports = { createReciept, readReciept, readRecieptById, updateReciept, deleteReciept, getReceiptByQuery, getfilteredData, dataByUser, getReceiptByGate };
+async function downloadReport(req, res) {
+    try {
+        const reciept = await Reciept.find().populate("createdBy", "-password").sort({ _id: -1 });
+        return res.status(201).json({ success: true, data: reciept });
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({ success: false, error: error.message });
+    }
+}
+
+async function getDataWithLimit(req, res) {
+}
+
+module.exports = { createReciept, readReciept, readRecieptById, updateReciept, deleteReciept, getReceiptByQuery, getfilteredData, dataByUser, getReceiptByGate, getDataWithLimit, downloadReport };

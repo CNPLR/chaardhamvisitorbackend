@@ -3,17 +3,37 @@ const router = express.Router();
 
 const userReciept = require('../controller/Reciept.controller.js');
 
-const { createReciept, readReciept, readRecieptById, updateReciept, deleteReciept, getReceiptByQuery, getfilteredData, dataByUser, getReceiptByGate } = userReciept;
+const {
+    createReciept,
+    readReciept,
+    readRecieptById,
+    updateReciept,
+    deleteReciept,
+    getReceiptByQuery,
+    getfilteredData,
+    dataByUser,
+    getReceiptByGate,
+    getDataWithLimit,
+    downloadReport
+} = userReciept;
 
-// User Routes
-router.post('/databyuser', dataByUser);
-router.post('/databygate', getReceiptByGate);
-router.post('/', createReciept);
-router.post('/filtereduserdata', getReceiptByQuery);
-router.post('/data', getfilteredData);
-router.get('/', readReciept);
-router.get('/:id', readRecieptById);
-router.put('/:id', updateReciept); // Changed from /update to /:id
-router.delete('/delete/:id', deleteReciept);
+// POST Routes (Create & Query Data)
+router.post('/', createReciept); // Create receipt
+router.post('/databyuser', dataByUser); // Get data by user
+router.post('/databygate', getReceiptByGate); // Get data by gate
+router.post('/filtereduserdata', getReceiptByQuery); // Filtered user data
+router.post('/data', getfilteredData); // General filtered data
+
+// GET Routes (Read Data)
+router.get('/', readReciept); // Get all receipts
+router.get('/limit', getDataWithLimit); // Get receipts with limit
+router.get('/report', downloadReport); // Download report
+router.get('/:id', readRecieptById); // Get receipt by ID
+
+// PUT Route (Update Data)
+router.put('/:id', updateReciept); // Update receipt by ID
+
+// DELETE Route (Delete Data)
+router.delete('/:id', deleteReciept); // Delete receipt by ID
 
 module.exports = router;

@@ -18,10 +18,20 @@ async function createUser(req, res) {
 
 async function login(req, res) {
     const { email, password, company } = req.body
+
     try {
         const user = await User.findOne({ email: email })
+
+        if (!user) {
+            return res.status(404).json({ success: false, message: "user not found" });
+        }
+
         if (password == user.password) {
-            await User.findOneAndUpdate({ email }, { company: company });
+
+            let update = await User.findByIdAndUpdate(user.id, { company })
+
+            update.save();
+
             return res.status(201).json({ message: true, company: user.company, userId: user.id, token: generateToken(user._id) })
         }
         else {
