@@ -12,7 +12,7 @@ async function createReciept(req, res) {
     try {
         const {
             name, mobileNumber, place, persons, items, key, ammount, description,
-            locker, userId, company,gate
+            locker, userId, company, gate
         } = req.body;
 
 
@@ -50,7 +50,7 @@ async function createReciept(req, res) {
         // Save receipt
         const reciept = new Reciept({
             name, mobileNumber, place, persons, items, key, ammount, description,
-            locker, company,gate, receiptNo, createdBy: userId
+            locker, company, gate, receiptNo, createdBy: userId
         });
 
         await reciept.save()
@@ -148,6 +148,26 @@ async function getReceiptByQuery(req, res) {
     }
 }
 
+async function getReceiptByGate(req, res) {
+    try {
+        console.log(req.body)
+        const { gateNo } = req.body;
+        const queryObject = {};
+        if (gateNo) {
+            queryObject.$or = [
+                {
+                    gate: { $regex: new RegExp(gateNo, 'i') } // 'i' for case-insensitive
+                }
+            ];
+        }
+        const receipt = await Reciept.find(queryObject).populate("createdBy", "-password");
+
+        res.status(200).json(receipt); // Ensure you send a response to the client
+    } catch (error) {
+        res.status(500).json({ error: 'Server error' }); // Handle errors gracefully
+    }
+}
+
 async function dataByUser(req, res) {
     try {
         const { user } = req.body
@@ -200,4 +220,4 @@ async function deleteReciept(req, res) {
     }
 }
 
-module.exports = { createReciept, readReciept, readRecieptById, updateReciept, deleteReciept, getReceiptByQuery, getfilteredData, dataByUser };
+module.exports = { createReciept, readReciept, readRecieptById, updateReciept, deleteReciept, getReceiptByQuery, getfilteredData, dataByUser, getReceiptByGate };
