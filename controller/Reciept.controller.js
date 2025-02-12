@@ -7,7 +7,6 @@ const removeBookedKeys = require('../utils/removeBookedKeys');
 const app = express();
 app.use(express.json());
 
-
 async function createReciept(req, res) {
     try {
         const {
