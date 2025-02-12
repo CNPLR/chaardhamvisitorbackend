@@ -13,6 +13,6 @@ router.post('/data', getfilteredData);
 router.get('/', readReciept);
 router.get('/:id', readRecieptById);
 router.put('/:id', updateReciept); // Changed from /update to /:id
-router.delete('/:id', deleteReciept);
+router.delete('/delete/:id', deleteReciept);
 
 module.exports = router;

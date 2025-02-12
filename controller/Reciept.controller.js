@@ -95,7 +95,7 @@ async function updateReciept(req, res) {
         const receiptId = req.params.id;
 
         // Find the receipt by ID
-        const reciept = await Reciept.findOne({_id:receiptId,status:"active"});
+        const reciept = await Reciept.findOne({ _id: receiptId, status: "active" });
         if (!reciept) {
             return res.status(404).json({ success: false, message: "Receipt not found" });
         }
@@ -118,7 +118,7 @@ async function updateReciept(req, res) {
         await reciept.save();
 
         //Free the booked locker
-        if(status === "inactive"){
+        if (status === "inactive") {
             await removeBookedKeys(reciept?.key || []);
             console.log("Locker key free")
         }
@@ -186,9 +186,17 @@ async function getfilteredData(req, res) {
 
 async function deleteReciept(req, res) {
     try {
+        const receipt = await Reciept.findById(req.params.id)
+        if (!receipt) {
+            return res.status(200).json({ success: false, message: "Does not exist" })
+        }
+
+        await receipt.deleteOne()
+
+        return res.status(200).json({ success: true, message: "Delete successfull" })
 
     } catch (error) {
-
+        return res.status(500).json({ success: false, message: "Internal Server Error" })
     }
 }
 
