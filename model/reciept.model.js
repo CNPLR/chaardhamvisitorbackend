@@ -2,7 +2,7 @@
 const mongoose = require('mongoose');
 
 const recieptSchema = new mongoose.Schema({
-    receiptNo: {
+    receiptNo: {            //Change to parchiNumber
         type: String,
         unique: true
     },
@@ -52,6 +52,12 @@ const recieptSchema = new mongoose.Schema({
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
+    },
+    gate:{
+        type:String,
+        enum:["mvd","crd"],         //crd = chaardham
+        required:true
+        
     },
     status:{
         type:String,

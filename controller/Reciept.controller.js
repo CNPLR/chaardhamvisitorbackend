@@ -12,7 +12,7 @@ async function createReciept(req, res) {
     try {
         const {
             name, mobileNumber, place, persons, items, key, ammount, description,
-            locker, userId, company
+            locker, userId, company,gate
         } = req.body;
 
 
@@ -50,7 +50,7 @@ async function createReciept(req, res) {
         // Save receipt
         const reciept = new Reciept({
             name, mobileNumber, place, persons, items, key, ammount, description,
-            locker, company, receiptNo, createdBy: userId
+            locker, company,gate, receiptNo, createdBy: userId
         });
 
         await reciept.save()
